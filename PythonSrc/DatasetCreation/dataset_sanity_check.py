@@ -36,6 +36,7 @@ import multiprocessing
 import numpy as np
 try:
     import hdf5_utils as HDF5
+    import hdf5_getters as GETTERS
 except ImportError:
     pass # will be imported in command line
 
@@ -86,8 +87,8 @@ def sanity_check_1thread(maindir=None,threadid=-1,nthreads=-1,allfiles=[]):
                 tmp = GETTERS.__getattribute__(getter)(h5)
         except KeyboardInterrupt:
             raise KeyboardInterruptError()
-        except Exception,e:
-            print 'PROBLEM WITH FILE:',f; sys.stdout.flush()
+        except Exception as e:
+            print('PROBLEM WITH FILE:', f); sys.stdout.flush()
             raise
         finally:
             h5.close()
@@ -97,18 +98,18 @@ def sanity_check_1thread(maindir=None,threadid=-1,nthreads=-1,allfiles=[]):
 
 def die_with_usage():
     """ HELP MENU """
-    print 'dataset_sanity_check.py'
-    print '  by T. Bertin-Mahieux (2010) Columbia University'
-    print '     tb2332@columbia.edu'
-    print 'do a simple but full sanity check on the dataset'
-    print 'GOAL: read every field of every file to make sure nothing'
-    print '      is corrupted'
-    print 'usage:'
-    print '  python dataset_sanity_check.py -nthreads N <main dir>'
-    print 'PARAMS:'
-    print '  main dir      - Million Song Dataset root directory'
-    print 'FLAGS:'
-    print '  -nthreads N   - number of threads, default 1'
+    print('dataset_sanity_check.py')
+    print('  by T. Bertin-Mahieux (2010) Columbia University')
+    print('     tb2332@columbia.edu')
+    print('do a simple but full sanity check on the dataset')
+    print('GOAL: read every field of every file to make sure nothing')
+    print('      is corrupted')
+    print('usage:')
+    print('  python dataset_sanity_check.py -nthreads N <main dir>')
+    print('PARAMS:')
+    print('  main dir      - Million Song Dataset root directory')
+    print('FLAGS:')
+    print('  -nthreads N   - number of threads, default 1')
     sys.exit(0)
 
 
@@ -120,7 +121,6 @@ if __name__ == '__main__':
 
     # local imports
     sys.path.append(os.path.abspath(os.path.join(sys.argv[0],'../..')))
-    import hdf5_getters as GETTERS
 
     # flags
     nthreads = 1
@@ -138,9 +138,9 @@ if __name__ == '__main__':
     # count files
     allfiles = get_all_files(maindir,ext='.h5')
     nfiles = len(allfiles)
-    print 'we found',nfiles,'files.'
+    print('we found ', nfiles, 'files.')
     if nfiles != 1000000:
-        print 'WATCHOUT! NOT A MILLION FILES'
+        print('WATCHOUT! NOT A MILLION FILES')
     allfiles = sorted(allfiles)
     
     # create args for the threads
@@ -161,13 +161,13 @@ if __name__ == '__main__':
         pool.close()
         pool.join()
     except KeyboardInterrupt:
-        print 'MULTIPROCESSING'
-        print 'stopping multiprocessing due to a keyboard interrupt'
+        print('MULTIPROCESSING')
+        print('stopping multiprocessing due to a keyboard interrupt')
         pool.terminate()
         pool.join()
-    except Exception, e:
-        print 'MULTIPROCESSING'
-        print 'got exception: %r, terminating the pool' % (e,)
+    except Exception as e:
+        print('MULTIPROCESSING')
+        print('got exception: %r, terminating the pool' % (e))
         pool.terminate()
         pool.join()
         got_probs = True
@@ -176,5 +176,5 @@ if __name__ == '__main__':
     t2 = time.time()
     stimelength = str(datetime.timedelta(seconds=t2-t1))
     if not got_probs:
-        print 'ALL DONE, no apparent problem'
-    print 'execution time:', stimelength
+       print('ALL DONE, no apparent problem')
+    print('execution time:', stimelength)
